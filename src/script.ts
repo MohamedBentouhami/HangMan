@@ -67,11 +67,9 @@ function initLetters() {
 function initHideWord() {
   console.log(word);
   for (let i: number = 0; i < word.length; i++) {
-    let div: HTMLDivElement = document.createElement("div");
     let p: HTMLParagraphElement = document.createElement("p");
     p.textContent = "_";
-    div.append(p);
-    divWord?.append(div);
+    divWord?.append(p);
   }
 }
 
