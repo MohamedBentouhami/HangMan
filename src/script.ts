@@ -12,12 +12,16 @@ const config: HTMLDivElement = document.querySelector(
 const divWord: HTMLDivElement = document.querySelector(
   ".div-word"
 ) as HTMLDivElement;
+const chancesText: HTMLParagraphElement = document.querySelector(
+  ".div-word"
+) as HTMLParagraphElement;
 
 // API
 const API_URL = "https://random-word-api.vercel.app/api?words=1";
 
 //Games Variables
 let word: string;
+let chances: number = 6;
 
 // Events
 btn.addEventListener("click", startGame);
@@ -56,7 +60,7 @@ function initLetters() {
 }
 
 function initHideWord() {
-    console.log(divWord)
+  console.log(word);
   for (let i: number = 0; i < word.length; i++) {
     let div: HTMLDivElement = document.createElement("div");
     let p: HTMLParagraphElement = document.createElement("p");
@@ -66,4 +70,22 @@ function initHideWord() {
   }
 }
 
-function play(): void {}
+function play(this: HTMLButtonElement): void {
+  let letter: string = this.id;
+  this.removeEventListener("click", play);
+  this.classList.add("disable");
+
+  if (!word.includes(letter)) {
+    chances--;
+    updateChances();
+  } else {
+    // TODO print letters
+  }
+}
+
+function updateChances(): void {
+  chancesText!.textContent = `Chances Left : ${chances}`;
+  if (chances == 0) gameOver();
+}
+
+function gameOver(): void {}

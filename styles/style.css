@@ -18,3 +18,8 @@
         gap: 1em;
     }
 }
+
+
+.disable {
+    opacity: 0.2;
+}
