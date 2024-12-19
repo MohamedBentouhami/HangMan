@@ -1,0 +1,14 @@
+{
+  "name": "hangman",
+  "version": "1.0.0",
+  "description": "HangMan Game",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mohamed Bentouhami Belhaj",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^5.7.2"
+  }
+}
