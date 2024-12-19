@@ -15,8 +15,9 @@ const divWord: HTMLDivElement = document.querySelector(
 const chancesText: HTMLParagraphElement = document.querySelector(
   ".chances-label"
 ) as HTMLParagraphElement;
-const image: HTMLImageElement = document.getElementById("hang-man-pict") as HTMLImageElement;
-
+const image: HTMLImageElement = document.getElementById(
+  "hang-man-pict"
+) as HTMLImageElement;
 
 // API
 const API_URL = "https://random-word-api.vercel.app/api?words=1";
@@ -25,6 +26,7 @@ const API_URL = "https://random-word-api.vercel.app/api?words=1";
 let word: string;
 let chances: number = 6;
 let countFoundLetter: number = 0;
+let givenLetters: string[] = [];
 
 // Events
 btn.addEventListener("click", startGame);
@@ -34,6 +36,7 @@ async function startGame(): Promise<void> {
   await getRandomWord();
   updateChances();
   initHideWord();
+  setLevel();
   initLetters();
   image.classList.remove("hide");
 }
@@ -58,7 +61,11 @@ function initLetters() {
     let btn = document.createElement("button");
     btn.textContent = letter;
     btn.id = letter;
-    btn.addEventListener("click", play);
+    if (givenLetters.includes(letter)) {
+      btn.classList.add("disable");
+    } else {
+      btn.addEventListener("click", play);
+    }
     lettersDiv?.append(btn);
   }
   game?.append(lettersDiv);
@@ -79,7 +86,7 @@ function play(this: HTMLButtonElement): void {
   this.classList.add("disable");
   if (!word.includes(letter)) {
     chances--;
-    image.src = `./assets/images/${chances}.jpg`
+    image.src = `./assets/images/${chances}.jpg`;
     updateChances();
   } else {
     printGoodLetters(letter);
@@ -115,7 +122,7 @@ function showMessage(msg: string): void {
 }
 
 function checkIfWin() {
-    console.log(countFoundLetter);
+  console.log(countFoundLetter);
   if (countFoundLetter == word.length) {
     showMessage("you win");
     removesAllLetters();
@@ -133,5 +140,14 @@ function removesAllLetters(): void {
 function showAnswer(): void {
   for (let i: number = 0; i < word.length; i++) {
     divWord!.childNodes[i].textContent = word[i];
+  }
+}
+
+function setLevel() {
+  let mode: string = modeGame.value;
+  if (mode === "Easy") {
+    let nb: number = Math.floor(Math.random() * word.length);
+    printGoodLetters(word[nb]);
+    givenLetters.push(word[nb]);
   }
 }
