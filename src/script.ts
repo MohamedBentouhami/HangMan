@@ -13,7 +13,7 @@ const divWord: HTMLDivElement = document.querySelector(
   ".div-word"
 ) as HTMLDivElement;
 const chancesText: HTMLParagraphElement = document.querySelector(
-  ".div-word"
+  ".chances-label"
 ) as HTMLParagraphElement;
 
 // API
@@ -22,6 +22,7 @@ const API_URL = "https://random-word-api.vercel.app/api?words=1";
 //Games Variables
 let word: string;
 let chances: number = 6;
+let countFoundLetter: number;
 
 // Events
 btn.addEventListener("click", startGame);
@@ -29,6 +30,7 @@ btn.addEventListener("click", startGame);
 async function startGame(): Promise<void> {
   config.classList.add("hide");
   await getRandomWord();
+  updateChances();
   initHideWord();
   initLetters();
 }
@@ -39,7 +41,7 @@ async function getRandomWord(): Promise<void> {
     throw new Error(`Response status : ${response.status}`);
   }
   let data: any = await response.json();
-  word = data[0];
+  word = data[0].toUpperCase();
 }
 
 function initLetters() {
@@ -74,12 +76,11 @@ function play(this: HTMLButtonElement): void {
   let letter: string = this.id;
   this.removeEventListener("click", play);
   this.classList.add("disable");
-
   if (!word.includes(letter)) {
     chances--;
     updateChances();
   } else {
-    // TODO print letters
+    printGoodLetters(letter);
   }
 }
 
@@ -88,4 +89,22 @@ function updateChances(): void {
   if (chances == 0) gameOver();
 }
 
-function gameOver(): void {}
+function printGoodLetters(letter: string): void {
+  for (let i: number = 0; i < word.length; i++) {
+    if (word[i] === letter) {
+      divWord!.childNodes[i].textContent = letter;
+      countFoundLetter++;
+    }
+  }
+}
+
+function gameOver(): void {
+  showMessage("you lost");
+  setTimeout(() => {}, 4000);
+}
+
+function showMessage(msg: string): void {
+  let txt = document.createElement("p");
+  txt.textContent = msg;
+  game?.append(txt);
+}
