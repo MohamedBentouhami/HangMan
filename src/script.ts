@@ -15,6 +15,8 @@ const divWord: HTMLDivElement = document.querySelector(
 const chancesText: HTMLParagraphElement = document.querySelector(
   ".chances-label"
 ) as HTMLParagraphElement;
+const image: HTMLImageElement = document.getElementById("hang-man-pict") as HTMLImageElement;
+
 
 // API
 const API_URL = "https://random-word-api.vercel.app/api?words=1";
@@ -22,7 +24,7 @@ const API_URL = "https://random-word-api.vercel.app/api?words=1";
 //Games Variables
 let word: string;
 let chances: number = 6;
-let countFoundLetter: number;
+let countFoundLetter: number = 0;
 
 // Events
 btn.addEventListener("click", startGame);
@@ -33,6 +35,7 @@ async function startGame(): Promise<void> {
   updateChances();
   initHideWord();
   initLetters();
+  image.classList.remove("hide");
 }
 
 async function getRandomWord(): Promise<void> {
@@ -78,9 +81,11 @@ function play(this: HTMLButtonElement): void {
   this.classList.add("disable");
   if (!word.includes(letter)) {
     chances--;
+    image.src = `./assets/images/${chances}.jpg`
     updateChances();
   } else {
     printGoodLetters(letter);
+    checkIfWin();
   }
 }
 
@@ -100,11 +105,35 @@ function printGoodLetters(letter: string): void {
 
 function gameOver(): void {
   showMessage("you lost");
+  removesAllLetters();
   setTimeout(() => {}, 4000);
+  showAnswer();
 }
 
 function showMessage(msg: string): void {
   let txt = document.createElement("p");
   txt.textContent = msg;
   game?.append(txt);
+}
+
+function checkIfWin() {
+    console.log(countFoundLetter);
+  if (countFoundLetter == word.length) {
+    showMessage("you win");
+    removesAllLetters();
+  }
+}
+
+function removesAllLetters(): void {
+  const buttons: any = document.getElementById("div_letters");
+  for (let btn of buttons.childNodes) {
+    btn.removeEventListener("click", play);
+    btn.classList.add("disable");
+  }
+}
+
+function showAnswer(): void {
+  for (let i: number = 0; i < word.length; i++) {
+    divWord!.childNodes[i].textContent = word[i];
+  }
 }
